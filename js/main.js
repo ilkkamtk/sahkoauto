@@ -7,6 +7,10 @@ const options = {
   maximumAge: 0,
 };
 
+// kustom ikonit: oma paikka punainen, latauspiste vihreä
+const punainenIkoni = L.divIcon({className: 'punainen-ikoni'});
+const vihreaIkoni = L.divIcon({className: 'vihrea-ikoni'});
+
 // Funktio, joka ajetaan, kun paikkatiedot on haettu
 function success(pos) {
   const crd = pos.coords;
@@ -17,7 +21,7 @@ function success(pos) {
   console.log(`Longitude: ${crd.longitude}`);
   console.log(`More or less ${crd.accuracy} meters.`);
   naytaKartta(crd);
-  lisaaMarker(crd);
+  lisaaMarker(crd, 'Olen tässä', punainenIkoni);
 }
 
 function naytaKartta(crd) {
@@ -28,10 +32,10 @@ function naytaKartta(crd) {
   }).addTo(map);
 }
 
-function lisaaMarker(crd) {
-  L.marker([crd.latitude, crd.longitude]).
+function lisaaMarker(crd, teksti, ikoni) {
+  L.marker([crd.latitude, crd.longitude], {icon: ikoni}).
   addTo(map).
-  bindPopup('Olen tässä.').
+  bindPopup(teksti).
   openPopup();
 }
 
@@ -52,6 +56,11 @@ fetch(osoite + parametrit).then(function(vastaus) {
 }).then(function(latauspisteet) {
   console.log(latauspisteet);
   for (let i = 0; i < latauspisteet.length; i++) {
-    console.log(latauspisteet[i].AddressInfo.Title);
+    const teksti = latauspisteet[i].AddressInfo.Title;
+    const koordinaatit = {
+      latitude: latauspisteet[i].AddressInfo.Latitude,
+      longitude: latauspisteet[i].AddressInfo.Longitude,
+    };
+    lisaaMarker(koordinaatit, teksti, vihreaIkoni);
   }
 });
