@@ -1,6 +1,16 @@
-// Asetukset paikkatiedon hakua varten (valinnainen)
+// elementit, joihin tulostetaan tiedot
+const nimi = document.getElementById('nimi');
+const asemanOsoite = document.getElementById('osoite');
+const kaupunki = document.getElementById('kaupunki');
+const lisatiedot = document.getElementById('lisatiedot');
+const navigoi = document.querySelector('#navigoi a');
+// tallennetaan oma paikka
+let paikka = null;
+
+// liitetään kartta elementtiin #map
 const map = L.map('map');
 
+// Asetukset paikkatiedon hakua varten (valinnainen)
 const options = {
   enableHighAccuracy: true,
   timeout: 5000,
@@ -13,30 +23,38 @@ const vihreaIkoni = L.divIcon({className: 'vihrea-ikoni'});
 
 // Funktio, joka ajetaan, kun paikkatiedot on haettu
 function success(pos) {
-  const crd = pos.coords;
+  paikka = pos.coords;
 
   // Tulostetaan paikkatiedot konsoliin
   console.log('Your current position is:');
-  console.log(`Latitude : ${crd.latitude}`);
-  console.log(`Longitude: ${crd.longitude}`);
-  console.log(`More or less ${crd.accuracy} meters.`);
-  naytaKartta(crd);
-  lisaaMarker(crd, 'Olen tässä', punainenIkoni);
+  console.log(`Latitude : ${paikka.latitude}`);
+  console.log(`Longitude: ${paikka.longitude}`);
+  console.log(`More or less ${paikka.accuracy} meters.`);
+  naytaKartta(paikka);
+  lisaaMarker(paikka, 'Olen tässä', punainenIkoni);
 }
 
 function naytaKartta(crd) {
   // Käytetään leaflet.js -kirjastoa näyttämään sijainti kartalla (https://leafletjs.com/)
-  map.setView([crd.latitude, crd.longitude], 13);
+  map.setView([crd.latitude, crd.longitude], 11);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 }
 
-function lisaaMarker(crd, teksti, ikoni) {
+function lisaaMarker(crd, teksti, ikoni, latauspiste) {
   L.marker([crd.latitude, crd.longitude], {icon: ikoni}).
   addTo(map).
   bindPopup(teksti).
-  openPopup();
+  openPopup().
+  on('popupopen', function(popup) {
+    console.log(latauspiste);
+    nimi.innerHTML = latauspiste.AddressInfo.Title;
+    asemanOsoite.innerHTML = latauspiste.AddressInfo.AddressLine1;
+    kaupunki.innerHTML = latauspiste.AddressInfo.Town;
+    lisatiedot.innerHTML = latauspiste.AddressInfo.AccessComments;
+    navigoi.href = `https://www.google.com/maps/dir/?api=1&origin=${paikka.latitude},${paikka.longitude}&destination=${crd.latitude},${crd.longitude}`;
+  });
 }
 
 // Funktio, joka ajetaan, jos paikkatietojen hakemisessa tapahtuu virhe
@@ -61,6 +79,6 @@ fetch(osoite + parametrit).then(function(vastaus) {
       latitude: latauspisteet[i].AddressInfo.Latitude,
       longitude: latauspisteet[i].AddressInfo.Longitude,
     };
-    lisaaMarker(koordinaatit, teksti, vihreaIkoni);
+    lisaaMarker(koordinaatit, teksti, vihreaIkoni, latauspisteet[i]);
   }
 });
