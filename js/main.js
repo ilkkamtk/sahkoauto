@@ -1,6 +1,7 @@
-// Asetukset paikkatiedon hakua varten (valinnainen)
+// liitetään kartta elementtiin #map
 const map = L.map('map');
 
+// Asetukset paikkatiedon hakua varten (valinnainen)
 const options = {
   enableHighAccuracy: true,
   timeout: 5000,
