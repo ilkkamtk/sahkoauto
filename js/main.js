@@ -16,10 +16,13 @@ function success(pos) {
   console.log(`Latitude : ${crd.latitude}`);
   console.log(`Longitude: ${crd.longitude}`);
   console.log(`More or less ${crd.accuracy} meters.`);
+  // näytetään kartta
   naytaKartta(crd);
+  // näytetään markkeri
   lisaaMarker(crd);
 }
 
+// siirretään kartan päivitys omaan funktioon
 function naytaKartta(crd) {
   // Käytetään leaflet.js -kirjastoa näyttämään sijainti kartalla (https://leafletjs.com/)
   map.setView([crd.latitude, crd.longitude], 13);
@@ -28,6 +31,7 @@ function naytaKartta(crd) {
   }).addTo(map);
 }
 
+// siirretään markkereiden lisäys omaan funktioon
 function lisaaMarker(crd) {
   L.marker([crd.latitude, crd.longitude]).addTo(map)
   .bindPopup('Olen tässä.')
