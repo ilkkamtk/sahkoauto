@@ -1,6 +1,6 @@
 # sahkoauto
 
-AJAX-esimerkki Web-tekniikat ja digitaalinen media -kurssille. Sovelluksella haetaan sähköautojen latauspisteet 10 km säteellä omasta lokaatioosta.
+AJAX-esimerkki Web-tekniikat ja digitaalinen media -kurssille. Sovelluksella haetaan sähköautojen latauspisteet 10 km säteellä omasta lokaatioosta. Aloita lataamalla tämä [repo zippinä](https://github.com/ilkkamtk/sahkoauto/archive/master.zip).
 
 Vaihda branchia nähdäksesi esimerkin eri vaiheet.
 
