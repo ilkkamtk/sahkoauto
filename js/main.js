@@ -108,3 +108,6 @@ function haeLatauspisteet(crd) {
     }
   });
 }
+
+// aloita paikannus
+kaynnistaPaikannus();
