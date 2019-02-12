@@ -3,7 +3,11 @@ const nimi = document.getElementById('nimi');
 const asemanOsoite = document.getElementById('osoite');
 const kaupunki = document.getElementById('kaupunki');
 const lisatiedot = document.getElementById('lisatiedot');
-const navigoi = document.querySelector('#navigoi a');
+const navigoi = document.getElementById('navigoi');
+const paikanna = document.getElementById('paikanna');
+
+// jatka paikannusta kartan liikuttamisen jälkeen
+paikanna.addEventListener('click', kaynnistaPaikannus);
 
 // tyhjä olio oman paikan tallennusta varten
 let paikka = null;
@@ -81,11 +85,9 @@ function kaynnistaPaikannus() {
 }
 
 // keskeytä paikannus, jos käyttäjä siirtää karttaa
-map.on('moveend', function() {
+map.on('mousedown', function() {
   console.log('paikannus keskeytetty?');
   navigator.geolocation.clearWatch(paikannus);
-  // käynnistä paikannus 30sek päästä uudelleen
-  setTimeout(kaynnistaPaikannus, 30000);
 });
 
 // haetaan sähköautojen latauspisteet 10 km säteellä annetuista koordinaateista

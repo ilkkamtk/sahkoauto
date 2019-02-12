@@ -30,24 +30,33 @@ article {
   height: 40vh;
 }
 
-#nimi, #navigoi {
+#nimi, .navigoi {
   width: 50%;
 }
 
-#navigoi {
+.navigoi {
   display: flex;
   justify-content: flex-end;
 }
 
-#navigoi a {
-  display: block;
-  line-height: 3rem;
-  text-align: center;
+.navigoi ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.navigoi li {
+  display: inline-block;
+}
+
+#navigoi {
   color: #fff;
   background-color: #3fb4f4;
-  box-sizing: border-box;
-  padding: .5rem;
-  text-decoration: none;
+}
+
+#paikanna {
+  color: #fff;
+  background-color: #f48375;
 }
 
 #osoite, #kaupunki, #lisatiedot {
@@ -61,6 +70,15 @@ article {
   display: flex;
   flex-wrap: wrap;
   box-sizing: border-box;
+}
+
+.nappi {
+  display: inline-block;
+  line-height: 3rem;
+  text-align: center;
+  box-sizing: border-box;
+  padding: .5rem;
+  text-decoration: none;
 }
 
 /* leaflet ikonit */
