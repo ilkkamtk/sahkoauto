@@ -17,13 +17,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
-map.on('dragstart', function() {
-  //keskeytä paikannus
-  navigator.geolocation.clearWatch(paikannus);
-  // käynnistä paikannus 30sek päästä uudelleen
-  setTimeout(kaynnistaPaikannus, 30000);
-});
-
 // taulukko markkereita varten
 const markers = L.markerClusterGroup();
 
@@ -51,29 +44,29 @@ function success(pos) {
   console.log(`Latitude : ${paikka.latitude}`);
   console.log(`Longitude: ${paikka.longitude}`);
   console.log(`More or less ${paikka.accuracy} meters.`);
-  naytaKartta(paikka);
+  paivitaKartta(paikka);
   lisaaMarker(paikka, 'Olen tässä', punainenIkoni);
   haeLatauspisteet(paikka);
 }
 
-function naytaKartta(crd) {
+function paivitaKartta(crd) {
   // Käytetään leaflet.js -kirjastoa näyttämään sijainti kartalla (https://leafletjs.com/)
   map.setView([crd.latitude, crd.longitude], 11);
 }
 
 function lisaaMarker(crd, teksti, ikoni, latauspiste) {
   const marker = L.marker([crd.latitude, crd.longitude], {icon: ikoni}).
-  addTo(map).
-  bindPopup(teksti).
-  openPopup().
-  on('popupopen', function(popup) {
-    console.log(latauspiste);
-    nimi.innerHTML = latauspiste.AddressInfo.Title;
-    asemanOsoite.innerHTML = latauspiste.AddressInfo.AddressLine1;
-    kaupunki.innerHTML = latauspiste.AddressInfo.Town;
-    lisatiedot.innerHTML = latauspiste.AddressInfo.AccessComments;
-    navigoi.href = `https://www.google.com/maps/dir/?api=1&origin=${paikka.latitude},${paikka.longitude}&destination=${crd.latitude},${crd.longitude}&travelmode=driving`;
-  });
+      addTo(map).
+      bindPopup(teksti).
+      openPopup().
+      on('popupopen', function(popup) {
+        console.log(latauspiste);
+        nimi.innerHTML = latauspiste.AddressInfo.Title;
+        asemanOsoite.innerHTML = latauspiste.AddressInfo.AddressLine1;
+        kaupunki.innerHTML = latauspiste.AddressInfo.Town;
+        lisatiedot.innerHTML = latauspiste.AddressInfo.AccessComments;
+        navigoi.href = `https://www.google.com/maps/dir/?api=1&origin=${paikka.latitude},${paikka.longitude}&destination=${crd.latitude},${crd.longitude}&travelmode=driving`;
+      });
   markers.addLayer(marker);
 }
 
@@ -84,8 +77,17 @@ function error(err) {
 
 function kaynnistaPaikannus() {
 // Käynnistetään paikkatietojen haku
- paikannus = navigator.geolocation.watchPosition(success, error, options);
+  console.log('aloita paikannus');
+  paikannus = navigator.geolocation.watchPosition(success, error, options);
 }
+
+// keskeytä paikannus, jos käyttäjä siirtää karttaa
+map.on('dragstart', function() {
+  navigator.geolocation.clearWatch(paikannus);
+  // käynnistä paikannus 30sek päästä uudelleen
+  setTimeout(kaynnistaPaikannus, 30000);
+});
+
 // haetaan sähköautojen latauspisteet 10 km säteellä annetuista koordinaateista
 // API-dokumentaatio: https://openchargemap.org/site/develop/api
 const osoite = 'https://api.openchargemap.io/v3/poi/?';
