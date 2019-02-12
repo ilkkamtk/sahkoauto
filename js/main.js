@@ -82,7 +82,7 @@ function kaynnistaPaikannus() {
 }
 
 // keskeytä paikannus, jos käyttäjä siirtää karttaa
-map.on('dragstart', function() {
+map.on('moveend', function() {
   navigator.geolocation.clearWatch(paikannus);
   // käynnistä paikannus 30sek päästä uudelleen
   setTimeout(kaynnistaPaikannus, 30000);
