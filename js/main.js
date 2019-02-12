@@ -9,6 +9,10 @@ let paikka = null;
 
 // liitetään kartta elementtiin #map
 const map = L.map('map');
+// käytetään openstreetmapia
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
 
 // Asetukset paikkatiedon hakua varten (valinnainen)
 const options = {
@@ -38,9 +42,6 @@ function success(pos) {
 function naytaKartta(crd) {
   // Käytetään leaflet.js -kirjastoa näyttämään sijainti kartalla (https://leafletjs.com/)
   map.setView([crd.latitude, crd.longitude], 11);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
 }
 
 function lisaaMarker(crd, teksti, ikoni, latauspiste) {
