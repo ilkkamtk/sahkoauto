@@ -54,7 +54,7 @@ function lisaaMarker(crd, teksti, ikoni, latauspiste) {
     asemanOsoite.innerHTML = latauspiste.AddressInfo.AddressLine1;
     kaupunki.innerHTML = latauspiste.AddressInfo.Town;
     lisatiedot.innerHTML = latauspiste.AddressInfo.AccessComments;
-    navigoi.href = `https://www.google.com/maps/dir/?api=1&origin=${paikka.latitude},${paikka.longitude}&destination=${crd.latitude},${crd.longitude}`;
+    navigoi.href = `https://www.google.com/maps/dir/?api=1&origin=${paikka.latitude},${paikka.longitude}&destination=${crd.latitude},${crd.longitude}&travelmode=driving`;
   });
 }
 
