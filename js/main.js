@@ -32,6 +32,7 @@ function success(pos) {
   console.log(`More or less ${paikka.accuracy} meters.`);
   naytaKartta(paikka);
   lisaaMarker(paikka, 'Olen tässä', punainenIkoni);
+  haeLatauspisteet(crd);
 }
 
 function naytaKartta(crd) {
@@ -65,20 +66,23 @@ function error(err) {
 // Käynnistetään paikkatietojen haku
 navigator.geolocation.watchPosition(success, error, options);
 
-// haetaan sähköautojen latauspisteet 10 km säteellä (koordinaatit kovakoodattu)
+// haetaan sähköautojen latauspisteet 10 km säteellä annetuista koordinaateista
 // API-dokumentaatio: https://openchargemap.org/site/develop/api
 const osoite = 'https://api.openchargemap.io/v3/poi/?';
-const parametrit = 'coutrycode=FI&latitude=60.2208611&longitude=24.8034188&distance=10&distanceunit=km';
-fetch(osoite + parametrit).then(function(vastaus) {
-  return vastaus.json();
-}).then(function(latauspisteet) {
-  console.log(latauspisteet);
-  for (let i = 0; i < latauspisteet.length; i++) {
-    const teksti = latauspisteet[i].AddressInfo.Title;
-    const koordinaatit = {
-      latitude: latauspisteet[i].AddressInfo.Latitude,
-      longitude: latauspisteet[i].AddressInfo.Longitude,
-    };
-    lisaaMarker(koordinaatit, teksti, vihreaIkoni, latauspisteet[i]);
-  }
-});
+
+function haeLatauspisteet(crd) {
+  const parametrit = `coutrycode=FI&latitude=${crd.latitude}&longitude=${crd.longitude}&distance=10&distanceunit=km`;
+  fetch(osoite + parametrit).then(function(vastaus) {
+    return vastaus.json();
+  }).then(function(latauspisteet) {
+    console.log(latauspisteet);
+    for (let i = 0; i < latauspisteet.length; i++) {
+      const teksti = latauspisteet[i].AddressInfo.Title;
+      const koordinaatit = {
+        latitude: latauspisteet[i].AddressInfo.Latitude,
+        longitude: latauspisteet[i].AddressInfo.Longitude,
+      };
+      lisaaMarker(koordinaatit, teksti, vihreaIkoni, latauspisteet[i]);
+    }
+  });
+}
