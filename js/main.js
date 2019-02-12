@@ -48,4 +48,4 @@ function error(err) {
 }
 
 // Käynnistetään paikkatietojen haku
-navigator.geolocation.watchPosition(success, error, options);
+navigator.geolocation.getCurrentPosition(success, error, options);
