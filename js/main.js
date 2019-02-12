@@ -32,7 +32,7 @@ function success(pos) {
   console.log(`More or less ${paikka.accuracy} meters.`);
   naytaKartta(paikka);
   lisaaMarker(paikka, 'Olen tässä', punainenIkoni);
-  haeLatauspisteet(crd);
+  haeLatauspisteet(paikka);
 }
 
 function naytaKartta(crd) {
