@@ -15,6 +15,9 @@ let paikka = null;
 // tyhjä olio paikannuksen aloittamista ja pysäyttämistä varten
 let paikannus = null;
 
+// zoomtaso
+let zoomlevel = 11;
+
 // liitetään kartta elementtiin #map
 const map = L.map('map');
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -22,7 +25,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // taulukko markkereita varten
-const markers = L.markerClusterGroup();
+const markers = L.layerGroup();
+map.addLayer(markers);
 
 // Asetukset paikkatiedon hakua varten (valinnainen)
 const options = {
@@ -39,7 +43,7 @@ const vihreaIkoni = L.divIcon({className: 'vihrea-ikoni'});
 function success(pos) {
   // poistetaan vanhat markerit
   markers.clearLayers();
-
+  console.log('markkerit', markers);
   // asetetaan oma paikka
   paikka = pos.coords;
 
@@ -55,12 +59,11 @@ function success(pos) {
 
 function paivitaKartta(crd) {
   // Käytetään leaflet.js -kirjastoa näyttämään sijainti kartalla (https://leafletjs.com/)
-  map.setView([crd.latitude, crd.longitude], 11);
+  map.setView([crd.latitude, crd.longitude], zoomlevel);
 }
 
 function lisaaMarker(crd, teksti, ikoni, latauspiste) {
   const marker = L.marker([crd.latitude, crd.longitude], {icon: ikoni}).
-      addTo(map).
       bindPopup(teksti).
       on('popupopen', function(popup) {
         console.log(latauspiste);
@@ -88,6 +91,11 @@ function kaynnistaPaikannus() {
 map.on('mousedown', function() {
   console.log('paikannus keskeytetty?');
   navigator.geolocation.clearWatch(paikannus);
+});
+
+map.on('zoom', function() {
+  zoomlevel = map.getZoom();
+  console.log(zoomlevel);
 });
 
 // haetaan sähköautojen latauspisteet 10 km säteellä annetuista koordinaateista
