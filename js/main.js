@@ -1,5 +1,9 @@
 // liitetään kartta elementtiin #map
 const map = L.map('map');
+// käytetään openstreetmapia
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
 
 // Asetukset paikkatiedon hakua varten (valinnainen)
 const options = {
@@ -17,16 +21,13 @@ function success(pos) {
   console.log(`Latitude : ${crd.latitude}`);
   console.log(`Longitude: ${crd.longitude}`);
   console.log(`More or less ${crd.accuracy} meters.`);
-  naytaKartta(crd);
+  paivitaKartta(crd);
   lisaaMarker(crd);
 }
 
-function naytaKartta(crd) {
+function paivitaKartta(crd) {
   // Käytetään leaflet.js -kirjastoa näyttämään sijainti kartalla (https://leafletjs.com/)
   map.setView([crd.latitude, crd.longitude], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
 }
 
 function lisaaMarker(crd) {
