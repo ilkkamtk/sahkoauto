@@ -4,11 +4,28 @@ const asemanOsoite = document.getElementById('osoite');
 const kaupunki = document.getElementById('kaupunki');
 const lisatiedot = document.getElementById('lisatiedot');
 const navigoi = document.querySelector('#navigoi a');
-// tallennetaan oma paikka
+
+// tyhjä olio oman paikan tallennusta varten
 let paikka = null;
+
+// tyhjä olio paikannuksen aloittamista ja pysäyttämistä varten
+let paikannus = null;
 
 // liitetään kartta elementtiin #map
 const map = L.map('map');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+}).addTo(map);
+
+map.on('dragstart', function() {
+  //keskeytä paikannus
+  navigator.geolocation.clearWatch(paikannus);
+  // käynnistä paikannus 30sek päästä uudelleen
+  setTimeout(kaynnistaPaikannus, 30000);
+});
+
+// taulukko markkereita varten
+const markers = L.markerClusterGroup();
 
 // Asetukset paikkatiedon hakua varten (valinnainen)
 const options = {
@@ -23,6 +40,10 @@ const vihreaIkoni = L.divIcon({className: 'vihrea-ikoni'});
 
 // Funktio, joka ajetaan, kun paikkatiedot on haettu
 function success(pos) {
+  // poistetaan vanhat markerit
+  markers.clearLayers();
+
+  // asetetaan oma paikka
   paikka = pos.coords;
 
   // Tulostetaan paikkatiedot konsoliin
@@ -38,13 +59,10 @@ function success(pos) {
 function naytaKartta(crd) {
   // Käytetään leaflet.js -kirjastoa näyttämään sijainti kartalla (https://leafletjs.com/)
   map.setView([crd.latitude, crd.longitude], 11);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
 }
 
 function lisaaMarker(crd, teksti, ikoni, latauspiste) {
-  L.marker([crd.latitude, crd.longitude], {icon: ikoni}).
+  const marker = L.marker([crd.latitude, crd.longitude], {icon: ikoni}).
   addTo(map).
   bindPopup(teksti).
   openPopup().
@@ -56,6 +74,7 @@ function lisaaMarker(crd, teksti, ikoni, latauspiste) {
     lisatiedot.innerHTML = latauspiste.AddressInfo.AccessComments;
     navigoi.href = `https://www.google.com/maps/dir/?api=1&origin=${paikka.latitude},${paikka.longitude}&destination=${crd.latitude},${crd.longitude}&travelmode=driving`;
   });
+  markers.addLayer(marker);
 }
 
 // Funktio, joka ajetaan, jos paikkatietojen hakemisessa tapahtuu virhe
@@ -63,9 +82,10 @@ function error(err) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
+function kaynnistaPaikannus() {
 // Käynnistetään paikkatietojen haku
-navigator.geolocation.getCurrentPosition(success, error, options);
-
+ paikannus = navigator.geolocation.watchPosition(success, error, options);
+}
 // haetaan sähköautojen latauspisteet 10 km säteellä annetuista koordinaateista
 // API-dokumentaatio: https://openchargemap.org/site/develop/api
 const osoite = 'https://api.openchargemap.io/v3/poi/?';
