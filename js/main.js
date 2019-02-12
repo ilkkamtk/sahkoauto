@@ -58,7 +58,6 @@ function lisaaMarker(crd, teksti, ikoni, latauspiste) {
   const marker = L.marker([crd.latitude, crd.longitude], {icon: ikoni}).
       addTo(map).
       bindPopup(teksti).
-      openPopup().
       on('popupopen', function(popup) {
         console.log(latauspiste);
         nimi.innerHTML = latauspiste.AddressInfo.Title;
@@ -83,6 +82,7 @@ function kaynnistaPaikannus() {
 
 // keskeytä paikannus, jos käyttäjä siirtää karttaa
 map.on('moveend', function() {
+  console.log('paikannus keskeytetty?');
   navigator.geolocation.clearWatch(paikannus);
   // käynnistä paikannus 30sek päästä uudelleen
   setTimeout(kaynnistaPaikannus, 30000);
