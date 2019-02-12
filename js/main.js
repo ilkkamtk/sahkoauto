@@ -64,7 +64,7 @@ function error(err) {
 }
 
 // Käynnistetään paikkatietojen haku
-navigator.geolocation.watchPosition(success, error, options);
+navigator.geolocation.getCurrentPosition(success, error, options);
 
 // haetaan sähköautojen latauspisteet 10 km säteellä annetuista koordinaateista
 // API-dokumentaatio: https://openchargemap.org/site/develop/api
